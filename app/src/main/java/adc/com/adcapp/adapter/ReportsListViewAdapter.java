@@ -9,6 +9,11 @@ import android.widget.BaseAdapter;
  */
 
 public class ReportsListViewAdapter extends BaseAdapter{
+
+    public void ReportsListViewAdapter(){
+
+    }
+
     @Override
     public int getCount() {
         return 0;
