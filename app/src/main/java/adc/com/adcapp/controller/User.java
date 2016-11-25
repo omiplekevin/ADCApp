@@ -24,6 +24,7 @@ public class User {
     public interface OnEvent{
         void session(Boolean isLoggedIn);
         void register(Boolean isSuccess, String[] errorMessage);
+        void data(Data.Post[] post, boolean isSuccess, String[] errorMessage);
     }
 
     public static User getInstance() {
@@ -81,6 +82,12 @@ public class User {
 
     public void logout(){
         success = false;
+    }
+
+    public void newData(Data.Post[] post, boolean isSuccess, String[] errors){
+        if (callback != null){
+            callback.data(post, isSuccess, errors);
+        }
     }
 
     public void setCallback(OnEvent callback){
