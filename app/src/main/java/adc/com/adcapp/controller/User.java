@@ -44,6 +44,9 @@ public class User {
             @Override
             protected String doInBackground(String... voids) {
                 HashMap<String, String> map = new HashMap<>();
+                map.put("username", username);
+                map.put("password", password);
+                map.put("name", name);
                 return Network.NetworkRequest("", "POST", map);
             }
 
@@ -64,7 +67,9 @@ public class User {
             @Override
             protected String doInBackground(String... voids) {
                 HashMap<String, String> map = new HashMap<>();
-                return Network.NetworkRequest("", "", map);
+                map.put("username", username);
+                map.put("password", password);
+                return Network.NetworkRequest("", "POST", map);
             }
 
             @Override
