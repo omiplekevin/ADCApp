@@ -43,7 +43,7 @@ public class User {
             @Override
             protected String doInBackground(String... voids) {
                 HashMap<String, String> map = new HashMap<>();
-                return Network.NetworkRequest("", "", map);
+                return Network.NetworkRequest("", "POST", map);
             }
 
             @Override
