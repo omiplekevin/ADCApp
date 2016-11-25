@@ -1,5 +1,7 @@
 package adc.com.adcapp.controller;
 
+import android.util.Base64;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -25,9 +27,20 @@ public class Network {
 
             if (method.equals("POST")) {
                 StringBuilder params = new StringBuilder();
+                String password = "", username = "";
                 for (Map.Entry<String, String> entry : map.entrySet()) {
+                    if (entry.getValue().equals("password")){
+                        password = entry.getValue();
+                    } else if (entry.getValue().equals("username")){
+                        username = entry.getValue();
+                    }
                     params.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
                 }
+
+                String userPassword = username + ":" + password;
+                String encoded = Base64.encodeToString(userPassword.getBytes("UTF-8"), Base64.DEFAULT);
+
+                httpUrlConnection.setRequestProperty("Authorization", "Basic "+encoded);
                 httpUrlConnection.setDoOutput(true);
                 httpUrlConnection.setInstanceFollowRedirects(false);
                 httpUrlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
