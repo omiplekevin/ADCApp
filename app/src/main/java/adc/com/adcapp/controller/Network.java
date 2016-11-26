@@ -29,9 +29,9 @@ public class Network {
                 StringBuilder params = new StringBuilder();
                 String password = "", username = "";
                 for (Map.Entry<String, String> entry : map.entrySet()) {
-                    if (entry.getValue().equals("password")){
+                    if (entry.getKey().equals("password")){
                         password = entry.getValue();
-                    } else if (entry.getValue().equals("username")){
+                    } else if (entry.getKey().equals("username")){
                         username = entry.getValue();
                     }
                     params.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
