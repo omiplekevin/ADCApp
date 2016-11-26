@@ -22,6 +22,7 @@ public class ReportsActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reports);
 
+        getActionBar().setDisplayHomeAsUpEnabled(true);
         initializeVariables();
         setupAdapter();
     }

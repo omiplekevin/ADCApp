@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
+              android:layout_marginBottom="@dimen/_5dp"
               android:orientation="vertical">
 
     <FrameLayout
@@ -20,6 +21,8 @@
                 android:id="@+id/imageLocation"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/_128dp"
+                android:layout_marginEnd="@dimen/_1dp"
+                android:layout_marginRight="@dimen/_1dp"
                 android:layout_weight="1"
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop"
@@ -29,6 +32,8 @@
                 android:id="@+id/imageCapture"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/_128dp"
+                android:layout_marginLeft="@dimen/_1dp"
+                android:layout_marginStart="@dimen/_1dp"
                 android:layout_weight="1"
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop"
@@ -40,10 +45,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|bottom"
-            android:padding="@dimen/_10dp"
-            android:textSize="@dimen/_20sp"
-            android:textStyle="bold"
             android:background="@color/colorAlphaBlackBackground"
+            android:padding="@dimen/_5dp"
+            android:textColor="@color/color_3b3b3b"
+            android:textSize="@dimen/_15sp"
+            android:textStyle="bold"
             android:visibility="visible"/>
     </FrameLayout>
 
