@@ -1,10 +1,15 @@
 package adc.com.adcapp.activity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -79,5 +84,27 @@ public class Dashboard extends FragmentActivity implements OnMapReadyCallback {
                 .bearing(90)                // Sets the orientation of the camera to east
                 .build();
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.dashboard, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.logout:
+                SharedPreferences.Editor prefEdit = getSharedPreferences(LoginActivity.SHARED_PREFS, Context.MODE_PRIVATE).edit();
+                prefEdit.putBoolean(LoginActivity.LOGIN_PREF_FIELD, false);
+                prefEdit.commit();
+                startActivity(new Intent(this, LoginActivity.class));
+                finish();
+                break;
+        }
+
+        return true;
     }
 }
