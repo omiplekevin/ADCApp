@@ -6,10 +6,12 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -19,6 +21,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -30,9 +33,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import adc.com.adcapp.R;
+import adc.com.adcapp.controller.Data;
+import adc.com.adcapp.controller.User;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -53,6 +59,8 @@ public class LoginActivity extends Activity {
     private static final String[] DUMMY_CREDENTIALS = new String[]{
             "foo@example.com:hello", "bar@example.com:world"
     };
+
+    public static final String LOGIN_PREF_FIELD = "loggedin";
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
@@ -69,6 +77,11 @@ public class LoginActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         // Set up the login form.
+
+        if (isLoggedIn()) {
+            switchToDashboard();
+        }
+
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
 
@@ -186,17 +199,6 @@ public class LoginActivity extends Activity {
             cancel = true;
         }
 
-        // Check for a valid email address.
-        if (TextUtils.isEmpty(email)) {
-            mEmailView.setError(getString(R.string.error_field_required));
-            focusView = mEmailView;
-            cancel = true;
-        } else if (!isEmailValid(email)) {
-            mEmailView.setError(getString(R.string.error_invalid_email));
-            focusView = mEmailView;
-            cancel = true;
-        }
-
         if (cancel) {
             // There was an error; don't attempt login and focus the first
             // form field with an error.
@@ -205,14 +207,54 @@ public class LoginActivity extends Activity {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);
+            User.getInstance().setCallback(new User.OnEvent() {
+                @Override
+                public void session(Boolean isLoggedIn) {
+                    Log.e("LoginActivity", "session() loggedin?" + isLoggedIn);
+                    saveToPreference(LOGIN_PREF_FIELD, isLoggedIn);
+                    switchToDashboard();
+                }
+
+                @Override
+                public void register(Boolean isSuccess, String[] errorMessage) {
+                    Log.e("LoginActivity", "register() isSuccess?" + isSuccess + " errMsg:" + Arrays.deepToString(errorMessage));
+                }
+
+                @Override
+                public void data(Data.Post[] post, boolean isSuccess, String[] errorMessage) {
+                    Log.e("LoginActivity", "data() isSuccess?" + isSuccess + " errMsg:" + Arrays.deepToString(errorMessage));
+                }
+            });
+            User.getInstance().username = email;
+            User.getInstance().password = password;
+            User.getInstance().login();
+
         }
     }
 
-    private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
-        return email.contains("@");
+    public boolean saveToPreference(String key, Object value) {
+        SharedPreferences.Editor prefEditor = getPreferences(Context.MODE_PRIVATE).edit();
+        if (value instanceof Boolean) {
+            prefEditor.putBoolean(key, (boolean)value);
+            prefEditor.apply();
+            return true;
+        } else if (value instanceof String) {
+            prefEditor.putString(key, (String)value);
+            prefEditor.apply();
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean isLoggedIn(){
+        boolean isLoggedin = getPreferences(Context.MODE_PRIVATE).getBoolean(LOGIN_PREF_FIELD, false);
+        return isLoggedin;
+    }
+
+    private void switchToDashboard(){
+        startActivity(new Intent(LoginActivity.this, Dashboard.class));
+        finish();
     }
 
     private boolean isPasswordValid(String password) {

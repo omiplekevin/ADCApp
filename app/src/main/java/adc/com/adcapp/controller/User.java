@@ -1,10 +1,13 @@
 package adc.com.adcapp.controller;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.google.gson.Gson;
 
 import java.util.HashMap;
+
+import adc.com.adcapp.BuildConfig;
 
 public class User {
     private static volatile User instance;
@@ -69,12 +72,13 @@ public class User {
                 HashMap<String, String> map = new HashMap<>();
                 map.put("username", username);
                 map.put("password", password);
-                return Network.NetworkRequest("", "POST", map);
+                return Network.NetworkRequest(BuildConfig.login, "POST", map);
             }
 
             @Override
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
+                Log.i(getClass().getSimpleName(), s);
                 if (callback != null){
                     User user = new Gson().fromJson(s, User.class);
                     timestamp = user.timestamp;
